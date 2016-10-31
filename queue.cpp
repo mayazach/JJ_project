@@ -75,25 +75,3 @@ public:
 		}
 	}
 };
-
-int main(){
-
-	Queue mylist;
-	cout << "Is the queue empty?"  << mylist.isEmpty() << endl;
-	cout << "Adding numbers." << endl;
-	mylist.pushBack(5);
-	mylist.pushBack(11);
-	mylist.pushBack(2);
-	mylist.pushBack(4);
-	cout << "Is the queue empty?"  << mylist.isEmpty() << endl;
-	cout << "is 2 in the queue?" << endl;
-	cout << mylist.member(2) << endl;
-	cout << "queue contains: ";
-	mylist.print();
-	cout << "popped: " << mylist.pop() << endl;
-	cout << "last is " << mylist.back() << endl;
-	cout << "first is " << mylist.front() << endl;
-	cout << "is 8 in the queue?" << endl;
-	cout << mylist.member(8) << endl;
-
-}
