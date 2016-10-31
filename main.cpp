@@ -47,7 +47,7 @@ int main(){
 		for(i=0;i<=count;i++){
 			for(j=0;j<elem[i].length();j++){
 				if(isdigit(elem[i][j]) == 0){
-					cout << "Second and third elements must be integers" << endl;
+					cout << "Elements in every line except the last must be integers" << endl;
 					myfile.close();
 					return 1;
 				}
@@ -104,7 +104,7 @@ int main(){
 		for(i=1;i<=count;i++){
 			for(j=0;j<elem[i].length();j++){
 				if(isdigit(elem[i][j]) == 0){
-					cout << "Elements in every line except the last must be integers" << endl;
+					cout << "Second and third elements must be integers" << endl;
 					myfile.close();
 					return 1;
 				}
