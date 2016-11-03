@@ -14,7 +14,7 @@ int main(){
 	string type;
 	string elem[3];
 	string terminate="S";
-	myfile.open("graph.txt");
+	myfile.open("tinyGraph.txt");
 	string task[2] = {"A","Q"};
 
 	while (getline(myfile,line)){
@@ -60,7 +60,7 @@ int main(){
 
 	myfile.close();
 
-	myfile.open("tasks.txt");
+	myfile.open("tinyWorkload_FINAL.txt");
 	terminate = "F";
 
 	while (getline(myfile,line)){
@@ -91,12 +91,12 @@ int main(){
 				myfile.close();
 				return 1;
 			}
-			else
-				break;
+			//else
+			//	What must be done after F
 		}
 		elem[count]=line;
 		type = elem[0];
-		if((type != task[0]) && (type != task[1])){
+		if((type != task[0]) && (type != task[1]) && (type != terminate){
 			cout << "First element in a line must be A or Q" << endl;
 			myfile.close();
 			return 1;
