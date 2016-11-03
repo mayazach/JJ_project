@@ -10,7 +10,7 @@ Queue::~Queue(){
 		delete head;
 		head = n;
 	}
-	cout << "Queue destroyed." << endl;
+	//cout << "Queue destroyed." << endl;
 }
 
 void Queue::push(int id,int father){
