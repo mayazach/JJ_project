@@ -1,26 +1,12 @@
 # JJ_project
 
-main.cpp test input: graph.txt + tasks.txt
+Files:
 
-main.cpp test output: 
+queue.h-queue.cpp: queue to use for frontiers/explored in BFS
 
-Edge: 1->2
+qtest.cpp: tests queue functions on example queue
 
-Edge: 2->3
+main.cpp: so far, takes input from text files, exits with errors if there are mistakes, else puts input in variables to be used by the rest of the program
 
-Edge: 3->1
+bfs.cpp: has a getPathSize function that returns the length of the path between two nodes once the two BFS searches have met (using the explored set and the two parents of the node where the searches met)
 
-Edge: 4->1
-
-Edge: 2->4
-
-Task Q: 1->3
-
-Task A: 4->5
-
-Task Q: 1->5
-
-Task Q: 5->1
-
-
-will try to get input for the Q/A stuff next
