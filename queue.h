@@ -19,7 +19,7 @@ QueueNode *head;
 int size;
 
 public:
-Queue(){head=NULL;size=0;std::cout << "Creating queue\n";};
+Queue(){head=NULL;size=0;/*std::cout << "Creating queue\n";*/};
 ~Queue();
 int getSize(){return size;};
 bool isEmpty(){return head==NULL;};
