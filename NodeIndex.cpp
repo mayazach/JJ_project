@@ -95,10 +95,12 @@ uint32_t* NodeIndex::getNodeNeighbors(uint32_t id, Buffer* buffer)
 	uint32_t index;
 	list_node *node;
 	uint32_t *result;
-	index = nodeIndex[id]->getOffset();
-	node = buffer->getListNode(index);
-	result =  node->getNeighbor();
-	return result;
+	if(nodeIndex[id] != NULL){
+		index = nodeIndex[id]->getOffset();
+		node = buffer->getListNode(index);
+		result =  node->getNeighbor();
+		return result;}
+	else return NULL;
 }
 
 int NodeIndex::getNoOfNeighbors(uint32_t id, Buffer* buffer)
@@ -106,9 +108,10 @@ int NodeIndex::getNoOfNeighbors(uint32_t id, Buffer* buffer)
         uint32_t index;
         list_node *node;
         uint32_t result;
-        index = nodeIndex[id]->getOffset();
-        node = buffer->getListNode(index);
-        result =  node->getNoOfNeighbors();
-        return result;
-
+	if(nodeIndex[id] != NULL){
+	        index = nodeIndex[id]->getOffset();
+	        node = buffer->getListNode(index);
+	        result =  node->getNoOfNeighbors();
+	        return result;}
+	else return 0;
 }
