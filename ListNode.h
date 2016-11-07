@@ -59,7 +59,14 @@ public:
 		noOfneigbors++;
 		return EXIT_SUCCESS;
 	}
-	
+
+	uint32_t* getNeighbor(){
+		return neighbor; 
+	}
+
+	int getNoOfNeighbors(){
+		return noOfneigbors;
+	}
 };
 
 #endif

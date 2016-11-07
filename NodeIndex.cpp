@@ -3,6 +3,7 @@
 #include "HashNode.h"
 #include "Buffer.h"
 #include "ListNode.h"
+#include "Ptr.h"
 using namespace std;
 
 int NodeIndex::insertNode(uint32_t nodeId, uint32_t nodeId2, Buffer& buffer)
@@ -87,4 +88,27 @@ list_node* NodeIndex::getListHead(uint32_t nodeId, list_node** buffer)
 	uint32_t offset = nodeIndex[nodeId]->getOffset();
 
 	return buffer[offset];
+}
+
+uint32_t* NodeIndex::getNodeNeighbors(uint32_t id, Buffer* buffer)
+{
+	uint32_t index;
+	list_node *node;
+	uint32_t *result;
+	index = nodeIndex[id]->getOffset();
+	node = buffer->getListNode(index);
+	result =  node->getNeighbor();
+	return result;
+}
+
+int NodeIndex::getNoOfNeighbors(uint32_t id, Buffer* buffer)
+{
+        uint32_t index;
+        list_node *node;
+        uint32_t result;
+        index = nodeIndex[id]->getOffset();
+        node = buffer->getListNode(index);
+        result =  node->getNoOfNeighbors();
+        return result;
+
 }

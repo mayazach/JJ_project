@@ -1,6 +1,7 @@
 #ifndef BUFFER_H
 #define BUFFER_H
 #include <iostream>
+#include <cstring>
 #include "ListNode.h"
 
 using namespace std;

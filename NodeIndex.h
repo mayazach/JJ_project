@@ -1,6 +1,7 @@
 #ifndef NODEINDEX_H
 #define NODEINDEX_H
 #include <iostream>
+#include <cstring>
 #include <string>
 #include "Ptr.h"
 #include "Buffer.h"
@@ -44,14 +45,20 @@ public:
 
 
 
-	int NodeIndex::insertNode(uint32_t, uint32_t, Buffer&);
+	int insertNode(uint32_t, uint32_t, Buffer&);
 
 	list_node* getListHead(uint32_t, list_node**);
 	int destroyNodeIndex(NodeIndex*);
 
 	int resizeIndex();
 
+	Ptr** getIndex(){
+		return nodeIndex;
+	}
 
+	uint32_t* getNodeNeighbors(uint32_t id, Buffer* buffer);
+
+	int getNoOfNeighbors(uint32_t id, Buffer* buffer);
 };
 
 

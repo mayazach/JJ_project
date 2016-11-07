@@ -2,6 +2,10 @@
 #include <cstdlib>
 #include <fstream>
 #include <string>
+#include "Buffer.cpp"
+#include "NodeIndex.cpp"
+#include "ListNode.cpp"
+#include "Ptr.h"
 
 using namespace std;
 
@@ -16,6 +20,14 @@ int main(){
 	string terminate="S";
 	myfile.open("tinyGraph.txt");
 	string task[2] = {"A","Q"};
+	Buffer *bufferIn;
+	Buffer *bufferOut;
+	NodeIndex *indexIn;
+	NodeIndex *indexOut;
+	bufferIn = new Buffer(4,4);
+	bufferOut = new Buffer(4,4);
+	indexIn = new NodeIndex(4,4);
+	indexOut = new NodeIndex(4,4);
 
 	while (getline(myfile,line)){
 		count = 0;
@@ -47,7 +59,7 @@ int main(){
 		for(i=0;i<=count;i++){
 			for(j=0;j<elem[i].length();j++){
 				if(isdigit(elem[i][j]) == 0){
-					cout << "Elements in every line except the last must be integers" << endl;
+					cout << "Second and third elements must be integers" << endl;
 					myfile.close();
 					return 1;
 				}
@@ -55,10 +67,29 @@ int main(){
 			num[i] = atoi(elem[i].c_str());
 		}
 		/*Replace with code for insertion to graph*/
-		cout << "Edge: " << num[0] << "->" << num[1] << endl;
+		indexOut->insertNode(num[0],num[1],*bufferOut);
+		indexIn->insertNode(num[1],num[0],*bufferIn);
 	}
 
-	myfile.close();
+	uint32_t *d;
+	int e;
+
+	for(j=0;j<num[0];j++){
+
+	d = indexOut->getNodeNeighbors(j,bufferOut);
+	e = indexOut->getNoOfNeighbors(j,bufferOut);
+
+	for(i=0;i<e;i++){
+		cout << j << "->" << d[i] << endl;
+	}
+
+	d = indexIn->getNodeNeighbors(j,bufferIn);
+        e = indexIn->getNoOfNeighbors(j,bufferIn);
+	for(i=0;i<e;i++){
+                cout << j << "<-" << d[i] << endl;
+        }
+
+	}
 
 	myfile.open("tinyWorkload_FINAL.txt");
 	terminate = "F";
@@ -91,12 +122,12 @@ int main(){
 				myfile.close();
 				return 1;
 			}
-			//else
-			//	What must be done after F
+			else
+				continue;
 		}
 		elem[count]=line;
 		type = elem[0];
-		if((type != task[0]) && (type != task[1]) && (type != terminate){
+		if((type != task[0]) && (type != task[1]) && (type != terminate)){
 			cout << "First element in a line must be A or Q" << endl;
 			myfile.close();
 			return 1;
@@ -104,14 +135,13 @@ int main(){
 		for(i=1;i<=count;i++){
 			for(j=0;j<elem[i].length();j++){
 				if(isdigit(elem[i][j]) == 0){
-					cout << "Second and third elements must be integers" << endl;
+					cout << "Elements in every line except the last must be integers" << endl;
 					myfile.close();
 					return 1;
 				}
 			}
 			num[i-1] = atoi(elem[i].c_str());
 		}
-		/*Replace with code for performing the task*/
 		cout << "Task " << type << ": " << num[0] << "->" << num[1] << endl;
 	}
 

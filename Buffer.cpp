@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 #include "Buffer.h"
 #include "Ptr.h"
 
