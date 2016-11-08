@@ -1,8 +1,8 @@
 #include <iostream>
 #include <cstdlib>
-#include "queue.cpp"
-#include "NodeIndex.cpp"
-#include "Buffer.cpp"
+#include "queue.h"
+#include "NodeIndex.h"
+#include "Buffer.h"
 #include "bfs.h"
 
 using namespace std;
