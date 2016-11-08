@@ -2,10 +2,10 @@
 #include <cstdlib>
 #include <fstream>
 #include <string>
-#include "Buffer.cpp"
-#include "NodeIndex.cpp"
+#include "bfs.cpp"
 #include "ListNode.cpp"
 #include "Ptr.h"
+
 
 using namespace std;
 
@@ -20,6 +20,7 @@ int main(){
 	string terminate="S";
 	myfile.open("tinyGraph.txt");
 	string task[2] = {"A","Q"};
+
 	Buffer *bufferIn;
 	Buffer *bufferOut;
 	NodeIndex *indexIn;
@@ -59,7 +60,7 @@ int main(){
 		for(i=0;i<=count;i++){
 			for(j=0;j<elem[i].length();j++){
 				if(isdigit(elem[i][j]) == 0){
-					cout << "Second and third elements must be integers" << endl;
+					cout << "Elements in every line except the last must be integers" << endl;
 					myfile.close();
 					return 1;
 				}
@@ -67,29 +68,12 @@ int main(){
 			num[i] = atoi(elem[i].c_str());
 		}
 		/*Replace with code for insertion to graph*/
+		//cout << "Edge: " << num[0] << "->" << num[1] << endl;
 		indexOut->insertNode(num[0],num[1],*bufferOut);
 		indexIn->insertNode(num[1],num[0],*bufferIn);
 	}
 
-	uint32_t *d;
-	int e;
-
-	for(j=0;j<num[0];j++){
-
-	d = indexOut->getNodeNeighbors(j,bufferOut);
-	e = indexOut->getNoOfNeighbors(j,bufferOut);
-
-	for(i=0;i<e;i++){
-		cout << j << "->" << d[i] << endl;
-	}
-
-	d = indexIn->getNodeNeighbors(j,bufferIn);
-        e = indexIn->getNoOfNeighbors(j,bufferIn);
-	for(i=0;i<e;i++){
-                cout << j << "<-" << d[i] << endl;
-        }
-
-	}
+	myfile.close();
 
 	myfile.open("tinyWorkload_FINAL.txt");
 	terminate = "F";
@@ -135,14 +119,22 @@ int main(){
 		for(i=1;i<=count;i++){
 			for(j=0;j<elem[i].length();j++){
 				if(isdigit(elem[i][j]) == 0){
-					cout << "Elements in every line except the last must be integers" << endl;
+					cout << "Second and third elements must be integers" << endl;
 					myfile.close();
 					return 1;
 				}
 			}
 			num[i-1] = atoi(elem[i].c_str());
 		}
-		cout << "Task " << type << ": " << num[0] << "->" << num[1] << endl;
+		/*Replace with code for performing the task*/
+		//cout << "Task " << type << ": " << num[0] << "->" << num[1] << endl;
+		if(type == task[0]){
+			indexOut->insertNode(num[0],num[1],*bufferOut);
+			indexIn->insertNode(num[1],num[0],*bufferIn);
+		}
+		if(type == task[1]){
+			cout << bidirectionalBFS(num[0],num[1],indexIn,indexOut,bufferIn,bufferOut) << endl;
+		}
 	}
 
 	return 0;

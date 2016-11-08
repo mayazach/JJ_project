@@ -15,6 +15,9 @@ int NodeIndex::insertNode(uint32_t nodeId, uint32_t nodeId2, Buffer& buffer)
 		resizeIndex();
 	}
 
+	if(nodeId > size){
+		return -1;
+	}
 
 	if (nodeIndex[nodeId] == NULL)
 	{

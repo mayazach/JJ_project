@@ -23,14 +23,21 @@ int bidirectionalBFS(int start, int finish,NodeIndex *in,NodeIndex *out,Buffer *
 	father2=finish;
 	explored.push(node1);
 	explored.push(node2);
+
 	successors = out->getNodeNeighbors(node1,buffout);
+	if(successors == NULL){
+		return -1;
+	}
 	size = out->getNoOfNeighbors(node1,buffout);
 	for(i=0;i<size;i++){
-		if(successors[i] == node2)
-			return 1;
+		if(successors[i] == node2){
+			return 1;}
 		frontier1.push(successors[i],node1);
 	}
 	successors =in->getNodeNeighbors(node2,buffin);
+	if(successors == NULL){
+                return -1;
+        }
         size = in->getNoOfNeighbors(node2,buffin);
 	for(i=0;i<size;i++){
 		frontier2.push(successors[i],node2);
