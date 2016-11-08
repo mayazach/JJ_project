@@ -19,7 +19,7 @@ QueueNode *head;
 int size;
 
 public:
-Queue(){head=NULL;size=0;/*std::cout << "Creating queue\n";*/};
+Queue(){head=NULL;size=0;std::cout << "queue created" << std::endl;};
 ~Queue();
 int getSize(){return size;};
 bool isEmpty(){return head==NULL;};
@@ -51,6 +51,9 @@ bool member(int num);
 *If there is no such node, returs -2.
 */
 int getFather(int num);
-};
 
+int front();
+
+int compare(Queue &q);
+};
 #endif

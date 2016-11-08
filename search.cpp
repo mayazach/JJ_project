@@ -56,5 +56,10 @@ int main(){
         indexIn->insertNode(15,14,*bufferIn);
         indexIn->insertNode(0,15,*bufferIn);
 
-	cout << bidirectionalBFS(0,16,indexIn,indexOut,bufferIn,bufferOut) << endl;
+//	cout << "Path: " << bidirectionalBFS(0,16,&(*indexIn),&(*indexOut),&(*bufferIn),&(*bufferOut)) << endl;
+	cout << "Path: " << bidirectionalBFS(0,14,indexIn,indexOut,bufferIn,bufferOut) << endl;
+	cout << "Path: " << bidirectionalBFS(0,3,indexIn,indexOut,bufferIn,bufferOut) << endl;
+	cout << "Path: " << bidirectionalBFS(0,1,indexIn,indexOut,bufferIn,bufferOut) << endl;
+//	cout << "Path: " << bidirectionalBFS(0,8,&indexIn,&indexOut,&bufferIn,&bufferOut) << endl;
+//	cout << "Path: " << bidirectionalBFS(7,16,&indexIn,&indexOut,&bufferIn,&bufferOut) << endl;
 }

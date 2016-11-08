@@ -6,6 +6,7 @@ using namespace std;
 int main(){
 	//constructor test
 	Queue example;
+	Queue second;
 
 	int num=4;
 
@@ -48,6 +49,17 @@ int main(){
                 cout << num << " is in queue." << endl;
 	else
                 cout << num << " not in queue." << endl;
+
+	second.push(4,3);
+	second.push(9);
+	second.push(11,9);
+	second.push(8,2);
+	second.print();
+
+	cout << example.compare(second) << endl;
+	second.print();
+
+	cout << second.getFather(second.front()) << endl;
 
 	//pop() test
 	while(!example.isEmpty())
