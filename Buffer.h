@@ -6,41 +6,29 @@
 
 using namespace std;
 
+
 class Buffer {
 
 	list_node** buffer;
 	int bufferSize;
 	int allocatedNodes;
 	int noOfNeighbors;
-
 	int resizeBuffer();
+
 public:
 
-	Buffer(const int _bufferSize, int n)
+	Buffer(const int _bufferSize, const int _noOfneighbors)
 	{
-		buffer = new list_node*[bufferSize];
-
-		if (buffer == NULL)
-		{
-			cerr << "Buffer: Memory allocation error." << endl;
-		}
-		memset(buffer, NULL, sizeof(list_node*) * bufferSize);
+		buffer = new list_node*[_bufferSize];
 		bufferSize = _bufferSize;
 		allocatedNodes = 0;
-		noOfNeighbors = n;
+		noOfNeighbors = _noOfneighbors;
+
 	}
 
 	~Buffer()
 	{
-		int i;
-		for (i = 0; i < bufferSize; i++)
-		{
-			if (buffer[i] != NULL)
-			{
-				delete buffer[i];
-			}
-		}
-		delete buffer;
+		//	deleteBufferArray();
 	}
 
 	list_node** getBuffer()
@@ -49,12 +37,12 @@ public:
 	}
 
 
+
 	uint32_t  allocNewNode();
 	list_node* getListNode(uint32_t);
-	void setNext(list_node*, uint32_t);
+	void setNext(list_node*, int);
 	int insertNode(uint32_t, uint32_t);
 
 };
-
 
 #endif

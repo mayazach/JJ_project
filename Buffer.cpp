@@ -1,5 +1,5 @@
 #include <iostream>
-#include <cstring>
+#include <algorithm>
 #include "Buffer.h"
 #include "Ptr.h"
 
@@ -8,25 +8,26 @@ using namespace std;
 
 int Buffer::resizeBuffer()
 {
-	list_node** tempBuffer = buffer;
 
-	buffer = new list_node*[bufferSize * 2];
+	int newSize = bufferSize * 2;
+	list_node** tempBuffer = buffer;
+	buffer = new list_node*[newSize];
 	if (buffer == NULL)
 	{
-		cerr << "Buffer: Memory allocation error." << endl;
+		cerr << "Resise Buffer: Memory allocation error." << endl;
+		return EXIT_FAILURE;
 	}
-	
-	/*arxikopoihsh twn 8esewn tou pinaka me NULL*/
-	memset(buffer, NULL, sizeof(list_node*) * bufferSize*2);
 
 	memcpy(buffer, tempBuffer, bufferSize*sizeof(list_node*));
 
-	
-	/*diplasiasmos mege8ous tou buffer*/
 	bufferSize *= 2;
-	//delete[] tempBuffer;
+	delete[] tempBuffer;
+
 	return EXIT_SUCCESS;
 }
+
+
+
 
 uint32_t Buffer::allocNewNode()
 {
@@ -40,6 +41,7 @@ uint32_t Buffer::allocNewNode()
 	}
 
 	buffer[allocatedNodes] = new list_node(noOfNeighbors);
+
 	if (buffer[allocatedNodes] == NULL)
 	{
 		cerr << "Hashtable: Memory allocation error." << endl;
@@ -49,13 +51,24 @@ uint32_t Buffer::allocNewNode()
 
 	return offset;
 }
+
+
 list_node* Buffer::getListNode(uint32_t offset)
 {
 	list_node* listNodePtr = buffer[offset], *node = listNodePtr;
+	uint32_t nextNodeOffset = offset;
 	while (listNodePtr != NULL)
 	{
 		node = listNodePtr;
-		listNodePtr = listNodePtr->getNextListNode();
+		nextNodeOffset = node->getNextListNode();
+		if (nextNodeOffset != 0)
+		{
+			listNodePtr = buffer[nextNodeOffset];
+		}
+		else
+		{
+			listNodePtr = NULL;
+		}
 	}
 
 	return node;
@@ -65,9 +78,9 @@ list_node* Buffer::getListNode(uint32_t offset)
 
 
 
-void Buffer::setNext(list_node* node, uint32_t nextOffset)
+void Buffer::setNext(list_node* node, int nextOffset)
 {
-	node->setNext(buffer[nextOffset]);
+	node->setNext(nextOffset);
 }
 
 
@@ -84,6 +97,7 @@ int Buffer::insertNode(uint32_t offset, uint32_t nodeId2)
 	else
 	{
 		list_node* node = getListNode(offset);
+
 		if (node->isFull() == true)
 		{
 			uint32_t offset = allocNewNode();

@@ -1,74 +1,85 @@
 #ifndef LISTNODE_H
 #define LISTNODE_H
 #include <iostream>
-#include <string>
 #include <stdint.h> 
 
 
+using namespace std;
 
-class list_node {
-	uint32_t* neighbor; //the ids of the neighbor nodes
-	uint32_t* edgeProperty; //property for each edge
-	list_node* nextListNode; //
-	uint32_t size;
-	uint32_t noOfneigbors;
+
+class list_node
+{
+	uint32_t* neighbor;
+	uint32_t* edgeProperty;
+	int nextListNode;
+	int noOfneighbors;
+	int size;
 
 public:
-	list_node(const int n)
-	{
-		neighbor = new uint32_t(n);
-		edgeProperty = new uint32_t(n);
-		nextListNode = NULL;
-		noOfneigbors = 0;
-		size = n;
-	}
 
-	~list_node()
+	list_node() :neighbor(NULL), edgeProperty(NULL), nextListNode(0) {}
+
+	list_node(const int _noOfneigbors)
 	{
-		delete neighbor;
-		delete edgeProperty;
-		list_node* temp = nextListNode;
-		while (nextListNode != NULL)
+		neighbor = new uint32_t[_noOfneigbors];
+		edgeProperty = new uint32_t[_noOfneigbors];
+
+		if (neighbor == NULL || edgeProperty == NULL)
 		{
-			temp = nextListNode->nextListNode;
-			delete nextListNode;
-			nextListNode = temp;
+			cerr << "list_node: Memory allocation error." << endl;
 		}
+		nextListNode = 0;
+		noOfneighbors = 0;
+		size = _noOfneigbors;
 	}
 
-	list_node* getNextListNode()
+	int getNextListNode()
 	{
 		return nextListNode;
 	}
 
-	void setNext(list_node* next)
+	void setNext(int next)
 	{
 		nextListNode = next;
 	}
+
+
+	uint32_t* getNeighbor()
+	{
+		return neighbor;
+	}
+
+	int getNoOfNeighbors()
+	{
+		return noOfneighbors;
+	}
+
 	bool isFull()
 	{
-		if (noOfneigbors >= size)
+		if (noOfneighbors >= size)
 		{
 			return true;
 		}
 		return false;
 	}
-	int addNeighbor(uint32_t nodeId)
+
+
+	int addNeighbor(uint32_t newNeighbor)
 	{
-		neighbor[noOfneigbors] = nodeId;
-		noOfneigbors++;
+		neighbor[noOfneighbors] = newNeighbor;
+		noOfneighbors++;
 		return EXIT_SUCCESS;
 	}
 
-	uint32_t* getNeighbor(){
-		return neighbor; 
+
+	~list_node()
+	{
+		delete[] neighbor;
+		delete[] edgeProperty;
 	}
 
-	int getNoOfNeighbors(){
-		return noOfneigbors;
-	}
+
 };
 
+
 #endif
-
-
