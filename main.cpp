@@ -168,6 +168,13 @@ int main()
 			num[i - 1] = atoi(elem[i].c_str());
 		}
 		cout << "Task " << type << ": " << num[0] << "->" << num[1] << endl;
+		if(type == task[0]){
+			indexOut->insertNode(num[0],num[1],*bufferOut);
+			indexIn->insertNode(num[1],num[0],*bufferIn);
+		}
+		if(type == task[1]){
+			cout << bidirectionalBFS(num[0],num[1],indexIn,indexOut,bufferIn,bufferOut) << endl;
+		}
 	}
 
 
