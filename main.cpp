@@ -6,7 +6,7 @@
 #include "NodeIndex.h"
 #include "ListNode.h"
 #include "Ptr.h"
-#include "bfs.cpp"
+#include "bfs.h"
 
 using namespace std;
 
