@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include "queue.h"
 
@@ -10,7 +9,6 @@ Queue::~Queue(){
 		delete head;
 		head = n;
 	}
-	//cout << "Queue destroyed." << endl;
 }
 
 void Queue::push(int id,int father){
@@ -56,4 +54,21 @@ int Queue::getFather(int num){
                 n=n->next;
                 }
         return -2;
+}
+
+int Queue::compare(Queue &q){
+	QueueNode *n=head;
+	while(n!=NULL){
+		if(q.member(n->data.id))
+			return n->data.id;
+		n=n->next;
+	}
+	return -1;
+}
+
+int Queue::front(){
+	if(head!=NULL)
+		return head->data.id;
+	else
+		return -1;
 }

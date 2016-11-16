@@ -1,47 +1,43 @@
 #ifndef HASHNODE_H
 #define HASHNODE_H
+
 #include <iostream>
-#include <string>
 #include <stdint.h> 
 
 
-using namespace std;
-
-
+/*Klash pou periexei to bucket kai deikth sto epomeno overflow bucket(an uparxei)*/
 class hashNode
 {
-private:
+public:
 	uint32_t* nodes;
 	hashNode* next;
-	uint32_t maxBucketSize;
-	uint32_t bucketSize;
-
-public:
-
-	hashNode(uint32_t n)
+	int count;
+	int maxBucketSize;
+	
+	hashNode() : nodes(NULL), next(NULL), count(0), maxBucketSize(0) {}
+	hashNode(const int _maxBucketSize)
 	{
-		nodes = new uint32_t[n];
-		maxBucketSize = n;
+
+		nodes = new uint32_t[_maxBucketSize];
 		next = NULL;
-		bucketSize = 0;
-	}
-
-	~hashNode()
-	{
-		uint32_t* node_ptr;
-		if (nodes != NULL)
-		{
-			/*node_ptr = nodes;
-			nodes = NULL;
-			delete node_ptr;*/
-			delete[] nodes;
-		}
+		count = 0;
+		maxBucketSize = _maxBucketSize;
 	}
 
 
-	uint32_t getBucketSize()
+	void setHashNode(const int _maxBucketSize)
 	{
-		return bucketSize;
+
+		nodes = new uint32_t[_maxBucketSize];
+		next = NULL;
+		count = 0;
+		maxBucketSize = _maxBucketSize;
+	}
+	
+
+	uint32_t getCount()
+	{
+		return count;
 	}
 
 	uint32_t getMaxBucketSize()
@@ -62,7 +58,7 @@ public:
 	bool edgeExists(uint32_t node)
 	{
 		uint32_t j;
-		for (j = 0; j < bucketSize; j++)
+		for (j = 0; j < count; j++)
 		{
 			if (nodes[j] == node)
 			{
@@ -76,71 +72,69 @@ public:
 
 	int insertNode(const uint32_t n)
 	{
-		nodes[bucketSize] = n;
-		increaseBucketSize();
+		nodes[count] = n;
+		increaseCount();
 		return EXIT_SUCCESS;
 	}
-	void increaseBucketSize()
+	void increaseCount()
 	{
-		bucketSize++;
+		count++;
 	}
 
 	bool isFull()
 	{
-		if (bucketSize >= maxBucketSize)
+		if (count >= maxBucketSize)
 		{
 			return true;
 		}
 		return false;
 	}
 
-};
 
-/*klash me to hashtable kai sunarthseis me oles tis leitourgies pou efarmozontai se auton*/
-class HashTable
-{
-private:
-	int size;
-	uint32_t maxBucketSize;
-	int hashfunction(const uint32_t);
 
-	int bye();
 
-public:
-
-	uint32_t getMaxBucketSize()
+	/*void set_hashNode()
 	{
-		return maxBucketSize;
+		rec_array = NULL;
+		next = NULL;
+		count = 0;
 	}
-	hashNode** hashtable;
-	int create();
-
-
-	void set_size(const int);
-
-	int insertNode(const uint32_t);
-
-	HashTable(const uint32_t _size, const uint32_t _maxBucketSize)
+	int set_bucket(const int b)
 	{
-		hashtable = new hashNode*[_size];
-		if (hashtable == NULL)
+		rec_array = new MyRecord*[b];
+		int i;
+		for (i = 0; i < b; i++)
 		{
-			cerr << "Hashtable: Memory allocation error." << endl;
+			rec_array[i] = NULL;
 		}
+		return 0;
 
+	}*/
 
-		memset(hashtable, NULL, sizeof(hashNode*) * _size);
-		size = _size;
-		maxBucketSize = _maxBucketSize;
-	}
-	~HashTable()
+	~hashNode()
 	{
-		bye();
-		delete[] hashtable;
+		if (nodes != NULL)
+		{
+			delete[] nodes;
+		}
 	}
+
 };
 
 
-
+/*~hashNode()
+	{
+		int i;
+		if (nodes != NULL)
+		{
+			for (i = 0; i < count; i++)
+			{
+				if (rec_array[i] != NULL)
+				{
+					delete rec_array[i];
+				}
+			}
+			delete[] rec_array;
+		}
+	}*/
 #endif
-
