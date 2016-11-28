@@ -55,6 +55,11 @@ uint32_t Buffer::allocNewNode()
 
 list_node* Buffer::getListNode(uint32_t offset)
 {
+	return buffer[offset];
+}
+
+list_node* Buffer::getLastNode(uint32_t offset)
+{
 	list_node* listNodePtr = buffer[offset], *node = listNodePtr;
 	uint32_t nextNodeOffset = offset;
 	while (listNodePtr != NULL)
@@ -78,34 +83,36 @@ list_node* Buffer::getListNode(uint32_t offset)
 
 
 
-void Buffer::setNext(list_node* node, int nextOffset)
+void Buffer::setNext(list_node*& node, int nextOffset)
 {
 	node->setNext(nextOffset);
 }
 
 
-int Buffer::insertNode(uint32_t offset, uint32_t nodeId2)
+uint32_t Buffer::insertNode(uint32_t nodeId2)
 {
 	/*an o kombos den exei ginei allocate*/
 
-	if (offset == -1)
-	{
-		offset = allocNewNode();
-		buffer[offset]->addNeighbor(nodeId2);
-
-	}
-	else
-	{
-		list_node* node = getListNode(offset);
-
-		if (node->isFull() == true)
-		{
-			uint32_t offset = allocNewNode();
-			setNext(node, offset);
-		}
-		node->addNeighbor(nodeId2);
-	}
-
-
+	uint32_t offset = allocNewNode();
+	buffer[offset]->addNeighbor(nodeId2);
 	return offset;
+
 }
+
+
+void Buffer::insertNode(uint32_t offset, uint32_t nodeId2)
+{
+	/*an o kombos den exei ginei allocate*/
+
+	list_node* node = getLastNode(offset);
+
+	if (node->isFull() == true)
+	{
+		uint32_t newOffset = allocNewNode();
+		setNext(node, newOffset);
+		node = buffer[newOffset];
+	}
+	node->addNeighbor(nodeId2);
+
+}
+

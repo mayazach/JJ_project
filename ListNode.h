@@ -22,9 +22,9 @@ public:
 	list_node(const int _noOfneigbors)
 	{
 		neighbor = new uint32_t[_noOfneigbors];
-		edgeProperty = new uint32_t[_noOfneigbors];
+	//	edgeProperty = new uint32_t[_noOfneigbors];
 
-		if (neighbor == NULL || edgeProperty == NULL)
+		if (neighbor == NULL) //|| edgeProperty == NULL)
 		{
 			cerr << "list_node: Memory allocation error." << endl;
 		}
@@ -75,7 +75,7 @@ public:
 	~list_node()
 	{
 		delete[] neighbor;
-		delete[] edgeProperty;
+	//	delete[] edgeProperty;
 	}
 
 

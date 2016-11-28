@@ -12,7 +12,7 @@ class Queue{
 struct QueueNode{
 	nodeInfo data;
 	QueueNode *next;
-	QueueNode(int id, int father){data.id=id;data.father=father;}
+	QueueNode(int id, int father) { data.id = id; data.father = father; next = NULL; }
 };
 
 QueueNode *head;

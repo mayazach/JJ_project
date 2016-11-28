@@ -4,184 +4,112 @@
 #include <string>
 #include "Buffer.h"
 #include "NodeIndex.h"
-#include "ListNode.h"
-#include "Ptr.h"
 #include "bfs.h"
+
 
 using namespace std;
 
-int main()
+int main(int argc, char* argv[])
 {
 
 	ifstream myfile;
-	string line;
-	int pos = 0;
-	int count, i, j, num[2];
+	string line = "";
 	string type;
-	string elem[3];
-	string terminate = "S";
-	myfile.open("tinyGraph.txt");
-	string task[2] = { "A", "Q" };
+	
+	string tasks[2] = { "A", "Q" };
 	Buffer *bufferIn;
 	Buffer *bufferOut;
 	NodeIndex *indexIn;
 	NodeIndex *indexOut;
-	int n = 10;
+	int n = 500, retVal = 0,bucketSize=500;
+
+
+	if (argc < 3)
+	{
+		cout << "Not enough arguments!" << endl;
+		return EXIT_FAILURE;
+	}
+
+	char* filename = argv[1];
+	char* workload = argv[2];
+
+
+
+
+	myfile.open(filename);
+
 	bufferIn = new Buffer(n, n);
 	bufferOut = new Buffer(n, n);
-	indexIn = new NodeIndex(n, n);
-	indexOut = new NodeIndex(n, n);
+	indexIn = new NodeIndex(n, bucketSize);
+	indexOut = new NodeIndex(n, bucketSize);
 
-	while (getline(myfile, line))
+	Parse parser;
+	Edge edge;
+	/*an to arxeio den anoikse*/
+	if (myfile.fail() == true)
 	{
-		count = 0;
-		while ((pos = line.find(" ")) != string::npos)
+		cerr << "Unable to open the input file " << filename << endl;
+		return EXIT_FAILURE;
+	}
+	else /*diabasma arxeiou*/
+	{
+
+		while (getline(myfile, line))
 		{
-			if (count >= 2)
+			retVal = parser.parseInput(line, edge);
+			if (retVal == EXIT_FAILURE)
 			{
-				cout << "Too many elements in line" << endl;
 				myfile.close();
-				return 1;
+				return retVal;
 			}
-			elem[count] = line.substr(0, pos);
-			count++;
-			line.erase(0, pos + 1);
-		}
-		if (count >= 2)
-		{
-			cout << "Too many elements in line" << endl;
-			myfile.close();
-			return 1;
-		}
-		if (count == 0)
-		{
-			if (line.compare(terminate))
+			else if (retVal == EXIT_SUCCESS) /*eisagwgh sto grafo*/
 			{
-				cout << "Too few elements in line" << endl;
+				indexOut->insertNode(edge.getNode1(), edge.getNode2(), *bufferOut);
+				indexIn->insertNode(edge.getNode2(), edge.getNode1(), *bufferIn);
+			}
+
+		}
+
+		
+		myfile.close();
+
+		myfile.open(workload);
+
+
+		Task task;
+
+		while (getline(myfile, line))
+		{
+
+			retVal = parser.parseWorkload(line, task);
+
+			if (retVal == EXIT_FAILURE)
+			{
 				myfile.close();
-				return 1;
+				return retVal;
 			}
-			else
-				break;
-		}
-		elem[count] = line;
-		for (i = 0; i <= count; i++)
-		{
-			for (j = 0; j < elem[i].length(); j++)
+			else if (retVal == EXIT_SUCCESS) /*ektelesh task*/
 			{
-				if (isdigit(elem[i][j]) == 0)
+				type = task.getType();
+				if (type == tasks[0])
 				{
-					cout << "Second and third elements must be integers" << endl;
-					myfile.close();
-					return 1;
+					indexOut->insertNode(task.getNode1(), task.getNode2(), *bufferOut);
+					indexIn->insertNode(task.getNode2(), task.getNode1(), *bufferIn);
+				}
+				if (type == tasks[1])
+				{
+					cout << bidirectionalBFS(task.getNode1(), task.getNode2(), indexIn, indexOut, bufferIn, bufferOut) << endl;
 				}
 			}
-			num[i] = atoi(elem[i].c_str());
+
 		}
-		/*Replace with code for insertion to graph*/
-		indexOut->insertNode(num[0], num[1], *bufferOut);
-		indexIn->insertNode(num[1], num[0], *bufferIn);
+
+		delete bufferIn;
+		delete bufferOut;
+		delete indexIn;
+		delete indexOut;
+
+		return EXIT_SUCCESS;
 	}
 
-	uint32_t *d;
-	int e;
-
-	for (j = 0; j < num[0]; j++)
-	{
-
-		d = indexOut->getNodeNeighbors(j, bufferOut);
-		e = indexOut->getNoOfNeighbors(j, bufferOut);
-
-		for (i = 0; i < e; i++)
-		{
-			cout << j << "->" << d[i] << endl;
-		}
-
-		d = indexIn->getNodeNeighbors(j, bufferIn);
-		e = indexIn->getNoOfNeighbors(j, bufferIn);
-		for (i = 0; i < e; i++)
-		{
-			cout << j << "<-" << d[i] << endl;
-		}
-
-	}
-
-	myfile.open("tinyWorkload_FINAL.txt");
-	terminate = "F";
-
-	while (getline(myfile, line))
-	{
-		count = 0;
-		while ((pos = line.find(" ")) != string::npos)
-		{
-			if (count >= 3)
-			{
-				cout << "Too many elements in line" << endl;
-				myfile.close();
-				return 1;
-			}
-			elem[count] = line.substr(0, pos);
-			count++;
-			line.erase(0, pos + 1);
-		}
-		if (count >= 3)
-		{
-			cout << "Too many elements in line" << endl;
-			myfile.close();
-			return 1;
-		}
-		if (count == 1)
-		{
-			cout << "Too few element in line" << endl;
-			myfile.close();
-			return 1;
-		}
-		if (count == 0)
-		{
-			if (line.compare(terminate))
-			{
-				cout << "Too few elements in line" << endl;
-				myfile.close();
-				return 1;
-			}
-			else
-				continue;
-		}
-		elem[count] = line;
-		type = elem[0];
-		if ((type != task[0]) && (type != task[1]) && (type != terminate))
-		{
-			cout << "First element in a line must be A or Q" << endl;
-			myfile.close();
-			return 1;
-		}
-		for (i = 1; i <= count; i++)
-		{
-			for (j = 0; j < elem[i].length(); j++)
-			{
-				if (isdigit(elem[i][j]) == 0)
-				{
-					cout << "Elements in every line except the last must be integers" << endl;
-					myfile.close();
-					return 1;
-				}
-			}
-			num[i - 1] = atoi(elem[i].c_str());
-		}
-		cout << "Task " << type << ": " << num[0] << "->" << num[1] << endl;
-		if(type == task[0]){
-			indexOut->insertNode(num[0],num[1],*bufferOut);
-			indexIn->insertNode(num[1],num[0],*bufferIn);
-		}
-		if(type == task[1]){
-			cout << bidirectionalBFS(num[0],num[1],indexIn,indexOut,bufferIn,bufferOut) << endl;
-		}
-	}
-
-
-	delete bufferIn;
-	delete bufferOut;
-	delete indexIn;
-	delete indexOut;
-	return 0;
 }

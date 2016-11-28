@@ -35,10 +35,11 @@ public:
 		size=_size;
 		noOfNeighbors = _noOfNeighbors;
 
-		int i;
+		uint32_t i;
 		for (i = 0; i < size; i++)
 		{
-			nodeIndex[i] = new Ptr(noOfNeighbors);
+			//nodeIndex[i] = new Ptr(noOfNeighbors);
+			nodeIndex[i] = NULL;
 		}
 	}
 
@@ -50,7 +51,10 @@ public:
 		int i;
 		for (i = 0; i < size; i++)
 		{
-			delete nodeIndex[i];
+			if (nodeIndex[i] != NULL)
+			{
+				delete nodeIndex[i];
+			}
 		}
 
 		delete[] nodeIndex;

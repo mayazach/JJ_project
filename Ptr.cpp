@@ -14,43 +14,24 @@ int Ptr::hashfunction(const uint32_t n)
 int Ptr::insertNode(const uint32_t node)
 {
 
-	int i = hashfunction(node);
-	
-	hashNode* lastBucket = getLastBucket(i,node);
-	if (lastBucket != NULL)
+	if (hashtable == NULL)
 	{
-		hashNode* insertBucket = lastBucket;
-		if (lastBucket->isFull() == true)
-		{
-			hashNode* newBucket = new hashNode(maxBucketSize);
-			lastBucket->setNext(newBucket);
-			insertBucket = newBucket;
-		}
+		hashtable = new Hashtable<uint32_t>(size);
 
-		insertBucket->insertNode(node);
-		return EXIT_SUCCESS;
+		if (hashtable == NULL)
+		{
+			cerr << "Hashtable: Memory allocation error." << endl;
+		}
 	}
-	else
-	{
-		return -1;
-	}
+	int ret= hashtable->insert(node);
+	return ret;
+
 }
 
-hashNode* Ptr::getLastBucket(const int index, const uint32_t node)
-{
-	hashNode* temp = &hashtable[index],*previous=temp;
 
-	while (temp != NULL)
-	{
-		previous = temp;
-		if (temp->edgeExists(node) == true)
-		{
-			return NULL;
-		}
 
-		temp = temp->getNext();
-	}
 
-	return previous;
 
-}
+
+/*************************************/
+

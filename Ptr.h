@@ -3,16 +3,18 @@
 #include <iostream>
 #include <stdint.h> 
 #include <stdlib.h>
+#include "Hashtable.h"
 #include "HashNode.h"
 
 using namespace std;
 
 class Ptr
 {
-	hashNode * hashtable;
+	Hashtable<uint32_t> * hashtable;
 	int size;
 	int maxBucketSize;
-	int offset;
+	uint32_t offset;
+	bool inBuffer;
 	int hashfunction(const uint32_t);
 
 
@@ -20,11 +22,12 @@ class Ptr
 
 public:
 
+
 	uint32_t getMaxBucketSize()
 	{
 		return maxBucketSize;
 	}
-	
+
 	uint32_t getOffset()
 	{
 		return offset;
@@ -33,12 +36,11 @@ public:
 	void setOffset(uint32_t _offset)
 	{
 		offset = _offset;
+		inBuffer = true;
 	}
 
 
 	int insertNode(const uint32_t);
-
-	hashNode* getLastBucket(const int,const uint32_t);
 
 
 	Ptr()
@@ -46,58 +48,78 @@ public:
 		maxBucketSize = 0;
 		hashtable = NULL;
 		size = 0;
-		offset = -1;
+		offset = 0;
+		inBuffer = false;
 	}
 
 	/*void setPtr(uint32_t n)
 	{
 
-		maxBucketSize = 10;
-		size = n;
-		hashtable = new hashNode*[n];
+	maxBucketSize = 10;
+	size = n;
+	hashtable = new hashNode*[n];
 
 
-		if (hashtable == NULL)
-		{
-			cerr << "Hashtable: Memory allocation error." << endl;
-		}
-		hashtableSize = n;
-		offset = -1;
-		int i;
-		for (i = 0; i < hashtableSize; i++)
-		{
-			hashtable[i] = new hashNode(maxBucketSize);
-		}
+	if (hashtable == NULL)
+	{
+	cerr << "Hashtable: Memory allocation error." << endl;
+	}
+	hashtableSize = n;
+	offset = -1;
+	int i;
+	for (i = 0; i < hashtableSize; i++)
+	{
+	hashtable[i] = new hashNode(maxBucketSize);
+	}
 
 	}*/
 
 	Ptr(uint32_t n)
 	{
-		maxBucketSize = 10;
-		
-		hashtable = new hashNode[n];
-		
+	//	maxBucketSize = 10;
+
+	/*	hashtable = new Hashtable<uint32_t>(n);
+
 		if (hashtable == NULL)
 		{
 			cerr << "Hashtable: Memory allocation error." << endl;
-		}
-		int i;
-		for (i = 0; i < n; i++)
-		{
-			hashtable[i].setHashNode(maxBucketSize);
-		}
+		}*/
+		hashtable = NULL;
+
 
 		size = n;
-		offset = -1;
+		offset = 0;
+		inBuffer = false;
+	}
+
+	bool edgeExists(uint32_t node2)
+	{
+		if (hashtable->keyExists(node2) == true)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	bool storedInBuffer()
+	{
+		return inBuffer;
 	}
 
 
 
+	void clean()
+	{
+		hashtable->clean();
+
+	}
+
 
 	~Ptr()
 	{
-	//	bye();
-		delete[] hashtable;
+		//	bye();
+		hashtable->clean();
+		delete hashtable;
 	}
 
 
