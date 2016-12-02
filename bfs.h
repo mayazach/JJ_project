@@ -1,6 +1,7 @@
 #ifndef BFS_H_
 #define BFS_H_
 #include "queue.h"
+#include "NodeIndex.h"
 
 int getPathSize(int father1,int father2,Queue &explored);
 

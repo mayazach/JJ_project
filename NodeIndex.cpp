@@ -4,6 +4,7 @@
 #include "Buffer.h"
 #include "ListNode.h"
 #include "Ptr.h"
+#include <math.h>
 
 using namespace std;
 
@@ -11,50 +12,95 @@ using namespace std;
 
 int NodeIndex::insertNode(uint32_t nodeId, uint32_t nodeId2, Buffer& buffer)
 {
-	if (nodeId >= getSize())
+	int ret;
+
+	if (nodeId >= size)
 	{
-		resizeIndex();
+		double newNode = nodeId + 1;
+		newNode = newNode / size;
+		double times = ceil(newNode);
+		resizeIndex(times);
 	}
 
-	/*eisagwgh akmhs sto Index*/
-	if (nodeIndex[nodeId]->insertNode(nodeId2) == -1)
+
+	/*an den exei eisax8ei o kombos sto index*/
+	if (nodeIndex[nodeId] == NULL)
 	{
-		cerr << "Edge " << nodeId << " " << nodeId2 << " already exists." << endl;
-		return EXIT_SUCCESS;
+		nodeIndex[nodeId] = new Ptr(noOfNeighbors);
+		ret = addNewNode(nodeId);
+		//	nodeIndex[nodeId].insertNode(nodeId2, buffer);
+		int offset = buffer.insertNode(nodeId);
+		nodeIndex[nodeId]->setHashtableOffset(ret);
+		nodeIndex[nodeId]->addOffset(offset);
 	}
+	else
+	{
+		int hashIndex = nodeIndex[nodeId]->getHashtableOffset();
+		ret = addNode(hashIndex, nodeId2, buffer);
+
+		if (ret == -1)
+		{
+			return ret;
+		}
+		else if (ret == -2)
+		{
+			rehash(hashIndex, nodeId, nodeId2, buffer);
+		}
+		else
+		{
+			//	nodeIndex[nodeId].insertNode(nodeId2, buffer);
+			int offset = nodeIndex[nodeId]->getOffset();
+			int retOffset = buffer.insertNode(offset, nodeId);
+			if (offset != retOffset)
+			{
+				nodeIndex[nodeId]->addOffset(offset);
+			}
+		}
+
+	}
+
 
 	/*eisagwgh akmhs sto buffer*/
 
 	/*an den exei ginei allocate listnode sto buffer*/
-	if (nodeIndex[nodeId]->getOffset() == -1)
+	uint32_t offset = 0;
+	if (nodeIndex[nodeId]->storedInBuffer() == false)
 	{
-		int offset = -1;
-		offset = buffer.insertNode(offset, nodeId2);
+		offset = buffer.insertNode(nodeId2);
 		nodeIndex[nodeId]->setOffset(offset);
 	}
 	else
 	{
-		buffer.insertNode(nodeIndex[nodeId]->getOffset(), nodeId2);
+		int storedOffset = nodeIndex[nodeId]->getOffset();
+		offset = buffer.insertNode(storedOffset, nodeId2);
+		if (storedOffset != offset)
+		{
+			nodeIndex[nodeId]->addOffset(offset);
+		}
 	}
 
 	return EXIT_SUCCESS;
 
 }
 
-int NodeIndex::resizeIndex()
+int NodeIndex::resizeIndex(const uint32_t times)
 {
-	Ptr** tempNodeIndex;
-	tempNodeIndex = new Ptr*[size * 2];
+	int newSize = times * size;
+	Ptr** tempNodeIndex = new Ptr*[newSize];
+	
+	//nodeIndex = new Ptr*[newSize];
 
-	int i;
-	for (i = size; i < size * 2; i++)
-	{
-		tempNodeIndex[i] = new Ptr(noOfNeighbors);
-	}
 	memcpy(tempNodeIndex, nodeIndex, size*sizeof(Ptr*));
-	size *= 2;
 	delete[] nodeIndex;
 	nodeIndex = tempNodeIndex;
+	int i;
+	for (i = size; i < newSize; i++)
+	{
+		nodeIndex[i] = NULL;// new Ptr(noOfNeighbors);
+	}
+
+	size = newSize;
+
 	/*set Ptr*/
 	return EXIT_SUCCESS;
 }
@@ -72,21 +118,61 @@ uint32_t* NodeIndex::getNodeNeighbors(uint32_t id, Buffer* buffer)
 	uint32_t index;
 	list_node *node;
 	uint32_t *result;
-	index = nodeIndex[id]->getOffset();
-	node = buffer->getListNode(index);
-	result = node->getNeighbor();
-	return result;
+	if ((nodeIndex[id] != NULL) && (id < size) && (nodeIndex[id]->storedInBuffer() == true))
+	{
+		index = nodeIndex[id]->getOffsetArray()[0];
+		node = buffer->getListNode(index);
+		result = node->getNeighbor();
+		return result;
+	}
+	else
+	{
+		return NULL;
+	}
+
 }
 
 int NodeIndex::getNoOfNeighbors(uint32_t id, Buffer* buffer)
 {
 	uint32_t index;
 	list_node *node;
-	uint32_t result;
-	index = nodeIndex[id]->getOffset();
-	node = buffer->getListNode(index);
-	result = node->getNoOfNeighbors();
+	uint32_t result = 0;
+	if ((size > id) && (nodeIndex[id]->storedInBuffer() == true))
+	{
+		index = nodeIndex[id]->getOffset();
+
+
+		node = buffer->getListNode(index);
+		result = node->getNoOfNeighbors();
+	}
+	else
+	{
+		return result = 0;
+	}
+
 	return result;
 
 }
 
+
+
+
+int NodeIndex::rehash(uint32_t hashIndex, uint32_t nodeId, uint32_t nodeId2,Buffer& buffer)
+{
+		int nodesCount = nodeIndex[nodeId]->getOffsetCount() + 1, neighbors = 0, i, j;
+		uint32_t*  listNodeNeighbors, *offset = nodeIndex[nodeId]->getOffsetArray();
+		list_node* listNode;
+		for (i = 0; i < nodesCount; i++)
+		{
+			listNode = buffer.getListNode(offset[i]);
+			listNodeNeighbors = listNode->getNeighbor();
+			neighbors = listNode->getNoOfNeighbors();
+			for (j = 0; j < neighbors; j++)
+			{
+				hashtableIndex[hashIndex]->rehash(listNodeNeighbors[j]);
+			}
+		}
+	int	ret = hashtableIndex[hashIndex]->insert(nodeId2);
+	return ret;
+	
+}
